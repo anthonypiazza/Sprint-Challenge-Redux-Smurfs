@@ -6,13 +6,17 @@ import thunk from 'redux-thunk';
 import logger from 'redux-logger';
 import { createStore, applyMiddleware } from 'redux';
 import { Provider } from 'react-redux';
-import /* You need some sort of reducer */ './reducers';
+import rootReducer from './reducers';
 
+//created redux store, added createStore function
+//passed in reducer representing state/data
+//added middleware packages given above
 const store = createStore(
-  () => {}, // this is the most basic reducer. A function that returns and object. Replace it.
-  applyMiddleware(/* be sure to throw in the proper middlewares here*/)
+  rootReducer, 
+  applyMiddleware(logger, thunk)
 );
 
+//Provider wraps App to make app aware of redux store
 ReactDOM.render(
   <Provider store={store}>
     <App />

@@ -1,22 +1,40 @@
 import React, { Component } from 'react';
 import './App.css';
-/*
- to wire this component up you're going to need a few things.
- I'll let you do this part on your own. 
- Just remember, `how do I `connect` my components to redux?`
- `How do I ensure that my component links the state to props?`
- */
+import { connect } from 'react-redux';
+import { getSmurfs } from '../actions';
+import Smurfs from './Smurfs';
+import SmurfForm from './SmurfForm';
+
 class App extends Component {
+  //added CDM lifecycle event to ensure proper GET request 
+  //to dispatch the GET action to the reducer -> called getSmurfs ACTION CREATOR (this.props)
+  componentDidMount(){
+    this.props.getSmurfs()
+  }
+
+  //render form
+  //render Loading screen if redux store state value of FETCHING is TRUE 
+  //else render Smurfs passing smurfs data down from mSTP
   render() {
     return (
       <div className="App">
-        <h1>SMURFS! 2.0 W/ Redux</h1>
-        <div>Welcome to your Redux version of Smurfs!</div>
-        <div>Start inside of your `src/index.js` file!</div>
-        <div>Have fun!</div>
+        <SmurfForm />
+        {this.props.fetching ? <h2> Loading ... </h2> : <Smurfs smurfs={this.props.smurfs} />}
       </div>
     );
   }
 }
 
-export default App;
+//define mSTP to tell connect which pieces of state to bring to component
+//takes state as param and returns object 
+//( keys passed to this.props | values are data we want from the store )
+const mapStateToProps = state => {
+  return {
+    smurfs: state.smurfs,
+    fetching: state.fetchingSmurfs,
+    err: state.err
+  }
+}
+
+//connect App to Redux store, pass in mSTP and pass in getSmurfs ACTION CREATOR component
+export default connect(mapStateToProps, { getSmurfs })(App);
